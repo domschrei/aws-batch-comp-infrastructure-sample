@@ -2,13 +2,17 @@
 FROM satcomp-mallob:common AS builder
 USER root
 
-
 ################### Extract Mallob in run stage
 FROM satcomp-infrastructure:leader AS mallob_liaison
 WORKDIR /
+
+USER root
+RUN DEBIAN_FRONTEND=noninteractive apt install -y libjemalloc-dev libjemalloc2 gdb psmisc
+
 # Copy mallob and solver scripts
 COPY --from=builder /mallob/build/mallob mallob
 COPY --from=builder /mallob/build/mallob_sat_process mallob_sat_process
+COPY --from=builder /mallob/build/mallob_process_dispatcher mallob_process_dispatcher
 
 COPY --chown=ecs-user /init_mallob.sh /competition
 COPY --chown=ecs-user /run_mallob.sh /competition
