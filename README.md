@@ -14,7 +14,7 @@ We describe step 1 in this document.  Step 2 is described in the [Solver Develop
 
 ## Creating an AWS Account
 
-First, create a specific AWS account for the competition. If you have not created an AWS account previously, it is straightforward to do, requiring a cell phone number, credit card, and address.  Navigate to [aws.amazon.com](https://aws.amazon.com) and follow the instructions to create an account.
+First, create a specific AWS account for the competition. If you have not created an AWS account previously, it is straightforward to do, requiring a cell phone number, credit card, and address. Make sure to register your account with an institutional email address (and not a private one), otherwise AWS cannot sponsor your account. To create an account, navigate to [aws.amazon.com](https://aws.amazon.com) and follow the instructions.
 
 If you have previously created an AWS account, we strongly advise that you create a separate AWS account for managing the SAT/SMT-Comp tool construction and testing. This makes it much easier for us to manage account credits and billing. Once the new account is created, email us the account number at: sat-comp@amazon.com (for SAT-Comp) or aws-smtcomp-2023@googlegroups.com (for SMT-Comp) and we will apply the appropriate credits to your account.
 
@@ -49,20 +49,19 @@ Here are github repositories for the solvers from the 2022 competitions.  **Plea
 infrastructure for 2023 is slightly changed to facilitate better debugging and easier build.  In order to run these solvers on the current infrastructure, you must update `input.json` and `solver_out.json` as described in [README-changes.md](README-changes.md).
 
 SAT-Comp Parallel: 
-* [ParKissat-RS](https://github.com/mww-aws/ParKissat/tree/RS)
-* [ParKissat-PRE](https://github.com/mww-aws/ParKissat/tree/PRE)
-* [PaKis22](https://github.com/KTRDeveloper/PaKis22)
-* [PaKisMAB22](https://github.com/KTRDeveloper/PaKisMAB22)
 * [DPS-Kissat](https://github.com/nabesima/DPS-satcomp2022)
+* [gimsatul](https://github.com/arminbiere/gimsatul)
+* [Mallob-ki](https://github.com/domschrei/isc22-mallob/tree/ki)
 * [NPS-Kissat](https://github.com/nabesima/DPS-satcomp2022/tree/non-det)
 * [P-Kissat](https://github.com/vvallade/painless-sat-competition-2022/tree/pkissat)
 * [P-MCOMSPS](https://github.com/vvallade/painless-sat-competition-2022)
-* [Mallob-ki](https://github.com/domschrei/isc22-mallob/tree/ki)
-* [gimsatul](https://github.com/arminbiere/gimsatul)
+* [ParKissat-RS](https://github.com/mww-aws/ParKissat/tree/RS)
+* [PaKis22](https://github.com/KTRDeveloper/PaKis22)
+* [PaKisMAB22](https://github.com/KTRDeveloper/PaKisMAB22)
 
 SAT-Comp Cloud:
-* [Paracooba](https://github.com/maximaximal/paracooba-satcomp22)
 * [Mallob-kicaliglu](https://github.com/domschrei/isc22-mallob/tree/kicaliglu)
+* [Paracooba](https://github.com/maximaximal/paracooba-satcomp22)
 
 SMT-Comp Parallel:
 * [SMTS Cube and Conquer](https://github.com/usi-verification-and-security/aws-smts/tree/parallel-cube-and-conquer-fixed)
@@ -74,3 +73,9 @@ SMT-Comp Cloud:
 * [SMTS Cube and Conquer](https://github.com/usi-verification-and-security/aws-smts/tree/cloud-cube-and-conquer-fixed)
 * [SMTS Portfolio](https://github.com/usi-verification-and-security/aws-smts/tree/cloud-portfolio)
 * [Vampire](https://github.com/vprover/vampire/tree/smtcomp22)
+
+## FAQ
+
+#### I already created my AWS account with a non-institutional email address. Can I still change the email address tied to my account?
+
+Yes. To change your email address, follow the instructions at https://repost.aws/knowledge-center/change-email-address.

@@ -78,6 +78,8 @@ This command will require 10-20 minutes to run.  Once it is complete, Mallob sho
 
 ### Quickstart Run
 
+**N.B.: For teams in China, new accounts are not configured with sufficient vCPU resources to run `quickstart-run`.  Please follow the directions in the Q&A section under: "How do I make sure I have enough vCPU capacity in my account to run my experiments?" prior to running `quickstart-run`.**   
+
 This command will spin up a cluster, submit a job to run called `test.cnf` that we uploaded to a storage location in S3 (the AWS storage service), and wait for the result, then spins down the cluster.  The form of the command is: 
 
 ```text
@@ -176,7 +178,19 @@ More information on creating and managing S3 buckets is found here: [https://aws
 ## Running Your Solver
 After storing docker images: `comp23:leader` (and for the cloud solver: `comp23:worker`) and placing at least one query file in your S3 bucket, you are ready to run your solver. 
 
-Running the solver consists of the following steps:
+### Running Your Solver Using `quickstart-run`
+You can use `quickstart-run` to spin up the cluster, run several files, and then spin down the cluster with one command.  To run files other than the `test.cnf` file, you can provide a list of s3 file paths to run, one after the other.  The command looks like: 
+
+```text
+quickstart-run [--s3-locations S3_LOCATIONS [S3_LOCATIONS ...]] 
+```
+
+In this case, after creating the cluster, it will try to run all files before spinning the cluster back down.  This allows you a relatively safe way to run several jobs.  **N.B.**: Keep an eye on it, though!  If your solver fails while solving and does not generate an output, then the script will poll forever waiting for the result message from your solver, and will not spin down the cluster.  In this case, follow the cleanup procedure below. 
+
+
+### Running Your Solver Using Basic Scripts
+
+If you would like to have finer-grained control, choosing when to spin up and down the cluster, or building your own scripts, you can use the following steps:
 
 1. Setup.
 
@@ -323,10 +337,40 @@ Although it is handy to get emails when certain account budget thresholds have b
 
 No. If you are submitting to the parallel track only, you do not need a worker image.  For the parallel track, we will assume that the leader manages all threading and communications within the single (multi-core) compute node.
 
+#### I attempted to use the quickstart-run or config-ecs, but the script keeps saying "Waiting for ECS" and not running my solver.  What happened?
+
+If you just started the script, then it is likely that either the requested EC2 servers have not yet initialized, or that the ECS cluster has not yet started running on them. It typically takes 5-10 minutes for the resources to become available after they are requested.  If it takes longer than 15 minutes, there is a problem.  Either the region has entirely run out of resources (unlikely), or your account does not have a high enough resource cap to support the cluster you have requested.  See the Q&A for "How do I make sure I have enough vCPU capacity in my account to run my experiments?".
+
+If you have sufficient capacity in your account and are still seeing this message, please contact us via email so that we can investigate.
+
+#### How do I make sure I have enough vCPU capacity in my account to run my experiments?
+EC2 sets default capacity limits on the number of compute nodes that are available to an account.  For the USA and Europe, these are currently defaulted to 640 vCPUs, so unless you are running a distributed cluster with more than 39 workers (which is expensive!), the default limit should be o.k.  However, in China, the current default limit appears to be 32 vCPUs, which is not even enough to run the `quickstart-run` script.  
+
+To check your account limits, navigate to the EC2 console for the account, and click on "Limits" on the left side. Type "All standard" in the search bar and determine the current limit. The limit is specified in terms of vCPUs, so each m6i-4xlarge image uses 16 vCPUs, and every m6i-16xlarge uses 64 CPUs. If you need additional vCPUs, click on the "All Standard" link and request a limit increase.  Turnaround time is usually around 24 hours for these requests.  Additional information on requesting increases can be found in the following [video](https://www.youtube.com/watch?v=F4zE3yVp-gg).  **N.B. Running a large cluster can become expensive. Make sure you limit your large-scale testing to preserve your AWS credits.**
+
+
+#### I submitted a job but nothing happens.  When I look in the logs, the leader keeps saying it is waiting for worker nodes and not running my solver.  What happened? ####
+
+If you were able to create the cluster successfully using ecs_config, then what has happened is that you submitted an SQS that asked for more workers than you configured when you set up your cluster.  Make sure that the number of worker nodes equals or exceeds the number of worker nodes that were requested in the SQS message. 
+
+#### I'm watching the ECS cluster, but nothing is happening; no nodes are being created.  What happened?
+
+This can happen if you try to start up a cloud solver when the infrastructure is configured for parallel execution or vice versa.  In this case, the machine image where you want to deploy does not match the requirements of the ECS task.  Make sure that if you are running a cloud solver, you have not configured the infrastructure for parallel.  If you are unsure, you can always run `update-solver-infrastructure` with the expected type.  If the infrastructure is already set up for this type, it will be a no-op.
+
+
 #### How do I manage my account after SAT-Comp if I want to follow security best practices?
 
 If you continue using your AWS account after the competition, we recommend that you follow AWS best practices as described here:
     [https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#create-iam-users](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#create-iam-users)
+
+#### I ran the infrastructure scripts, and they seemed to work, but when I go out to the console, I don't see any of the infrastructure: S3 buckets, ECS Queues, etc. What happened?
+
+The most common mistake people make when starting with AWS is not choosing the correct *region* for executing their jobs.  In the console on the top right there is a selectable region:
+
+<img src="readme-images/regions.png" alt="image of region selector" width="200"/>
+
+Make sure that the region selected in the top-right of the console page is `us-east-1`. 
+
 
 #### What are the sequence of steps performed by the leader container to set up the `input.json' file?
 
@@ -341,24 +385,6 @@ The leader infrastructure performs the following steps:
 1. Invoke the executable script located at path `/competition/solver` with a single parameter: the path to the working directory. The solver script will look for the `input.json` file in the working directory. It is also the location where solver output and error logs will be written.  
 1. The return code for `/competition/solver` will determine the expected result for the solver: A return code of 10 indicates SAT, 20 indicates UNSAT, 0 indicates UNKNOWN, and all other return codes indicate an error.
 1. Upon task completion, notify all workers that the task has ended.
-
-#### I ran the infrastructure scripts, and they seemed to work, but when I go out to the console, I don't see any of the infrastructure: S3 buckets, ECS Queues, etc. What happened?
-
-The most common mistake people make when starting with AWS is not choosing the correct *region* for executing their jobs.  In the console on the top right there is a selectable region:
-
-<img src="readme-images/regions.png" alt="image of region selector" width="200"/>
-
-Make sure that the region selected in the top-right of the console page is `us-east-1`. 
-
-#### I created a leader node and submitted a job, but the leader keeps saying it is waiting for worker nodes and not running my solver.  What happened?
-
-There are two likely causes.  First it could be that you submitted an SQS that asked for more workers than you configured when you set up your cluster.  Make sure that the number of worker nodes equals or exceeds the number of worker nodes that were requested in the SQS message.  Second, if you just set up the ECS cluster, then it is likely that either the requested EC2 servers have not yet initialized, or that the ECS cluster has not yet started running on them.  It takes 2-5 minutes for the resources to become available after they are requested.
-
-There is also a less-likely cause, involving capacity limits.  EC2 sets default capacity limits on the number of compute nodes that are available to an account.  If you are running large-scale tests, it may be that you have exceeded the default number of nodes.  To check, navigate to the EC2 console for the account, and click on "Limits" on the left side.  Type "All standard" in the search bar and determine the current limit.  The limit is specified in terms of vCPUs, so each m6i-4xlarge image uses 16 vCPUs, and every m6i-16xlarge uses 64 CPUs.  If you need additional vCPUs, click on the "All Standard" link and request a limit increase.  **N.B.** Running a large cluster can become expensive.  Make sure you limit your large-scale testing to preserve your AWS credits.
-
-#### I'm watching the ECS cluster, but nothing is happening; no nodes are being created.  What happened?
-
-This can happen if you try to start up a cloud solver when the infrastructure is configured for parallel execution or vice versa.  In this case, the machine image where you want to deploy does not match the requirements of the ECS task.  Make sure that if you are running a cloud solver, you have not configured the infrastructure for parallel.  If you are unsure, you can always run `update-solver-infrastructure` with the expected type.  If the infrastructure is already set up for this type, it will be a no-op.
 
 
 #### Suppose I want to use the console to setup my ECS clusters, or to monitor them.  How do I do that?
