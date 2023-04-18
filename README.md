@@ -1,3 +1,18 @@
+
+## Mallob Submission 2023
+
+This branch contains the files for my submissions to the SAT Competition 2023. See:
+
+    docker/mallob-images/leader/Dockerfile
+    docker/mallob-images/leader/run_solver.sh
+
+The same Docker containers can be used for the parallel and cloud track. (In `run_solver.sh` the solver is configured differently based on the number of nodes involved.)
+
+-- D. Schreiber
+
+<hr/>
+<hr/>
+
 # SAT-Comp and SMT-Comp Cloud Track Instructions
 
 This repository will help you get your parallel or distributed solver running efficiently on AWS.  You will build docker containers with your solver and then connect them to the AWS infrastructure.
