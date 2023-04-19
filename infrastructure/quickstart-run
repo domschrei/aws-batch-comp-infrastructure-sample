@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger("Quickstart Run")
 logger.setLevel(logging.INFO)
 
-WORKER_NODES = 3
+WORKER_NODES = 0
 
 class STS: 
     def __init__(self, sts_client) -> None:

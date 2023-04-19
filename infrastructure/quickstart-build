@@ -5,6 +5,8 @@ import boto3
 import json    
 import subprocess   
 
+SOLVERTYPE = "parallel" # parallel or cloud
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("Quickstart Build")
 logger.setLevel(logging.INFO)
@@ -21,7 +23,7 @@ if __name__ == "__main__":
 
      # run the create script
     cmd = ['python3', 'manage-solver-infrastructure.py', \
-        '--solver-type', 'cloud', \
+        '--solver-type', SOLVERTYPE, \
         '--mode', 'create'] \
         + profile_args + project_args
     logger.info(f"Creating the AWS infrastructure for project {args.project} using create-solver-project.")

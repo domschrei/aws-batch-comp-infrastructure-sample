@@ -28,10 +28,10 @@ options="-mono=$2 \
 -pre-cleanup=1 -seed=110519 `#-zero-only-logging` -v=3 -t=${n_threads_per_process} -max-lits-per-thread=100000000 \
 -buffered-imported-cls-generations=10 -clause-buffer-base-size=$bufferbasesize -clause-buffer-discount=$bufferdiscount \
 -clause-filter-clear-interval=300 -strict-clause-length-limit=64 -strict-lbd-limit=64 -satsolver=$portfolio \
--extmem-disk-dir="" -processes-per-host=1 -regular-process-allocation=1 -sleep=1000 -trace-dir=/tmp"
+-extmem-disk-dir='' -processes-per-host=1 -regular-process-allocation=1 -sleep=1000 -trace-dir=/tmp"
 
 command="mpirun --mca btl_tcp_if_include eth0 --allow-run-as-root --hostfile $1 --bind-to none \
--x "MALLOC_CONF=thp:always" -x "PATH=.:$PATH" -x "OMPI_MCA_btl_vader_single_copy_mechanism=none" -x "RDMAV_FORK_SAFE=1" \
+-x MALLOC_CONF=thp:always -x PATH=.:$PATH -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x RDMAV_FORK_SAFE=1 \
 mallob $options"
 
 echo "EXECUTING: $command"
