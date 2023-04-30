@@ -6,7 +6,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt install -y cmake build-essential zlib1g-dev libopenmpi-dev wget unzip build-essential zlib1g-dev cmake python3 build-essential gfortran wget curl libjemalloc-dev libjemalloc2 gdb psmisc
 
 # Fetch Mallob
-RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout concurrency && git checkout 1d1ffd6e110e31cfed58ef24c0034f999ee63c49
+RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout concurrency && git checkout 745ce3a0c4b251b0e0369be3737e68d9a35da9e2
 # Download CaDiCaL from git directly
 RUN cd mallob/lib && git clone https://github.com/domschrei/cadical && cd cadical && git checkout d91b3cecd718719c1d955f28c0f0da1cdc9e27bd 
 # Fetch remaining solvers, build all of them
