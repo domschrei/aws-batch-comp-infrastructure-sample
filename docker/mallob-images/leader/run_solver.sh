@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAX_N_SOLVERS_PER_PROCESS=32
+MAX_N_SOLVERS_PER_PROCESS=64
 
 export MALLOC_CONF="thp:always"
 export PATH=.:$PATH
