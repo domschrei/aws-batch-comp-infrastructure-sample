@@ -6,12 +6,11 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt install -y cmake build-essential zlib1g-dev libopenmpi-dev wget unzip build-essential zlib1g-dev cmake python3 build-essential gfortran wget curl libjemalloc-dev libjemalloc2 gdb psmisc
 
 # Fetch Mallob
-RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout concurrency && git checkout 745ce3a0c4b251b0e0369be3737e68d9a35da9e2
-# Download CaDiCaL from git directly
-RUN cd mallob/lib && git clone https://github.com/domschrei/cadical && cd cadical && git checkout d91b3cecd718719c1d955f28c0f0da1cdc9e27bd 
-# Fetch remaining solvers, build all of them
-RUN cd mallob/lib && bash fetch_and_build_sat_solvers.sh klcy
-RUN cd mallob && sed -i 's/^new_test.*$//g' CMakeLists.txt src/app/sat/setup.cmake # disable building test classes to save time & energy
+RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout concurrency && git checkout 01e3f454
+# Fetch and build solver backends
+RUN cd mallob/lib && bash fetch_and_build_solvers.sh klcy
+# disable building test classes to save time & energy
+RUN cd mallob && sed -i 's/^new_test.*$//g' CMakeLists.txt src/app/sat/setup.cmake
 # Build Mallob
 RUN cd mallob && mkdir -p build && cd build \
   && cmake -DCMAKE_BUILD_TYPE=RELEASE \
