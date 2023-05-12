@@ -6,7 +6,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt install -y cmake build-essential zlib1g-dev libopenmpi-dev wget unzip build-essential zlib1g-dev cmake python3 build-essential gfortran wget curl libjemalloc-dev libjemalloc2 gdb psmisc
 
 # Fetch Mallob
-RUN wget -nc https://github.com/domschrei/mallob/archive/d126df06ed018ba8cfe23234ca9fdd9132aedf15.zip -O mallob.zip
+RUN wget -nc https://github.com/domschrei/mallob/archive/131a85fa59c41b26ab9168beb4cbcded25c2a307.zip -O mallob.zip
 RUN unzip mallob.zip
 RUN mv mallob-*/ mallob
 # Fetch and build solver backends
