@@ -82,14 +82,14 @@ class MallobParser:
         """
         with open(output_file) as f:
             raw_logs = f.read()
-            if "found result UNSAT" in raw_logs:
+            if "s UNSATISFIABLE" in raw_logs:
                 return 20
-            elif "found result SAT" in raw_logs:
+            elif "s SATISFIABLE" in raw_logs:
                 return 10
-            elif "UNKNOWN" in raw_logs:
-                return 0
-            else:
+            elif "ERROR" in raw_logs:
                 return -1
+            else:
+                return 0
 
 if __name__ == "__main__":
     request_directory = sys.argv[1]
