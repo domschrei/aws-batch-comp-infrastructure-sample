@@ -38,7 +38,7 @@ else
 fi
 
 options="-mono=$2 \
--pre-cleanup=1 -seed=110519 `#-zero-only-logging` -v=3 -t=${n_threads_per_process} -max-lits-per-thread=100000000 \
+-pre-cleanup=1 -seed=110519 -zero-only-logging=1 -v=3 -t=${n_threads_per_process} -max-lits-per-thread=100000000 \
 -buffered-imported-cls-generations=10 -clause-buffer-base-size=$bufferbasesize -clause-buffer-discount=$bufferdiscount \
 -clause-filter-clear-interval=60 -strict-clause-length-limit=20 -strict-lbd-limit=20 -satsolver=$portfolio \
 -extmem-disk-dir='' -processes-per-host=1 -regular-process-allocation=1 -sleep=1000 -trace-dir=/tmp -mlbdps=6"
