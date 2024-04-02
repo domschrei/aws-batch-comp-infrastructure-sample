@@ -20,7 +20,7 @@ Although there is a lot of information about how to build with AWS infrastructur
 
 To use the AWS infrastructure, you will need the following tools installed:
 
-- [python3](https://www.python.org/): To install the latest version for your platform, go to the [downloads](https://www.python.org/downloads/) page.
+- [python3](https://www.python.org/) (3.8 or later): To install the latest version for your platform, go to the [downloads](https://www.python.org/downloads/) page.
 - [docker](https://www.docker.com/): There is a button to download Docker Desktop on the main page.
 - [boto3](https://aws.amazon.com/sdk-for-python/): Once you have python3 installed (above), you can install this with `pip3 install boto3`. 
 
@@ -89,8 +89,8 @@ Voila!
 
 Now we walk through the different steps in more detail. 
 
-[!NOTE]
-For teams in China, new accounts are not configured with sufficient vCPU resources to run `quickstart-run`.  Please follow the directions in the Q&A section under: "How do I make sure I have enough vCPU capacity in my account to run my experiments?" prior to running `quickstart-run`. 
+> [!NOTE]
+> For teams in China, new accounts are not configured with sufficient vCPU resources to run `quickstart-run`.  Please follow the directions in the Q&A section under: "How do I make sure I have enough vCPU capacity in my account to run my experiments?" prior to running `quickstart-run`. 
 
 ## Managing Solver Infrastructure.
 
@@ -106,8 +106,8 @@ If you ran the Mallob `quickstart-build`, you have created your solver infrastru
 
 where `SOLVER_TYPE`: is either `cloud` or `parallel` depending on which kind of solver you are running. This will change the AWS instance type and memory configurations for the ECS images used. You can switch back and forth as needed.
 
-[!NOTE]
-We will run cloud solvers on multiple 16-core machines ([m6i.4xlarge](https://aws.amazon.com/ec2/instance-types/)) with 64GB memory, while parallel solvers run on a single 64-core machine ([m6i.16xlarge](https://aws.amazon.com/ec2/instance-types/)) with 256GB memory.
+> [!NOTE]
+> We will run cloud solvers on multiple 16-core machines ([m6i.4xlarge](https://aws.amazon.com/ec2/instance-types/)) with 64GB memory, while parallel solvers run on a single 64-core machine ([m6i.16xlarge](https://aws.amazon.com/ec2/instance-types/)) with 256GB memory.
 
 
 ### Deleting and Re-creating the Infrastructure
@@ -119,8 +119,8 @@ If something goes wrong and you want to start over, simply run the `delete-solve
 
 This will delete the infrastructure and associated resources.  
 
-[!CAUTION]
-This deletion includes any files that have been uploaded to your S3 bucket and also any ECR docker images that you have created.** It will not delete your AWS account or security credentials.
+> [!CAUTION]
+> This deletion includes any files that have been uploaded to your S3 bucket and also any ECR docker images that you have created.** It will not delete your AWS account or security credentials.
 
 Next, you will create the AWS infrastructure necessary to build and test solvers. The SAT and SMT competitions both use the following infrastructure elements.  These should "just work", but there is more information about the different parts of the infrastructure in the FAQ.  To set up your resouces, simply run the  `create-solver-infrastructure` script that we have provided.
 
@@ -188,8 +188,8 @@ quickstart-run [--s3-locations S3_LOCATIONS [S3_LOCATIONS ...]]
 
 With this usage, after creating the cluster, it will try to run all files before spinning the cluster back down.  This allows you a relatively safe way to run several jobs.  
 
-[!CAUTION]
-Keep an eye on it, though!  If your solver fails while solving and does not generate an output, then the script will poll forever waiting for the result message from your solver, and will not spin down the cluster.  In this case, follow the cleanup procedure below. 
+> [!CAUTION]
+> Keep an eye on it, though!  If your solver fails while solving and does not generate an output, then the script will poll forever waiting for the result message from your solver, and will not spin down the cluster.  In this case, follow the cleanup procedure below. 
 
 
 ### Running Your Solver Using Basic Scripts
@@ -206,8 +206,8 @@ If you would like to have finer-grained control, choosing when to spin up and do
 
 After setup, you can run any number of solve jobs before cleaning up.
 
-[!CAUTION]
-It is very important that you [clean up](#cluster-teardown) once you are done. EC2 nodes that remain active continue to be charged against your account.
+> [!CAUTION]
+> It is very important that you [clean up](#cluster-teardown) once you are done. EC2 nodes that remain active continue to be charged against your account.
 
 ### Cluster Setup
 
@@ -235,8 +235,8 @@ job-queue-comp24-SolverWorkerService-...
 
 The service is running and available when the number of running tasks for the leader is `1` and the number of running tasks for the Worker service is `n`, as chosen with `NUM_WORKERS` in the `ecs-config` script argument.
 
-[!CAUTION]
-Your AWS account is charged for the number of EC2 instances that you run, so your bill will rise with the number of workers that you allocate.  
+> [!CAUTION]
+> Your AWS account is charged for the number of EC2 instances that you run, so your bill will rise with the number of workers that you allocate.  
 
 ### Job Submission and Execution
 
@@ -298,8 +298,8 @@ AWS provides a very full-featured log query language called [CloudWatch Logs Ins
 
 When the solver is invoked we store the `input.json` file and the analysis problem in a temporary directory that is passed as the argument to the solver.  We recommend that you use the same directory (or create a subdirectory) for storing all of the intermediate files used during solving.  At the conclusion of solving, all contents in this directory _for the leader solver_ will be uploaded to your S3 bucket (`ACCOUNT_NUMBER-us-east-1-comp24`) under a `/tmp/UUID` directory with a unique UUID so that you can inspect them offline.  This way, you can instrument your solvers to write to the filesystem for later analysis.  
 
-[!NOTE]
-Currently this is only available for the leader solver. In the future, we may add the capability to upload data from the workers depending on competitor feedback.  If you store the stdout and stderr logs to this directory (as the Mallob example does), then the output message produced by the solver will identify the UUID used for the bucket for easy reference.
+> [!NOTE]
+> Currently this is only available for the leader solver. In the future, we may add the capability to upload data from the workers depending on competitor feedback.  If you store the stdout and stderr logs to this directory (as the Mallob example does), then the output message produced by the solver will identify the UUID used for the bucket for easy reference.
 
 ### Cluster Teardown
 
@@ -313,8 +313,8 @@ This will terminate all EC2 instances and reset the number of leaders and worker
 
 You should verify that no EC2 instances are running after running the teardown script. Navigate to the [EC2 console](https://console.aws.amazon.com/ec2) and check the `Instances` tab.  There should be no running instances.  Note that it might take a minute or two for the instances to shut down after running the script.
 
-[!CAUTION]
-You are responsible for any charges made to your AWS account.  While we have tested the shutdown script and believe it to be robust, you are responsible for monitoring the EC2 cluster to make sure resources have shutdown properly. We have alternate directions to shutdown resources using the console in the Q&A section.
+> [!CAUTION]
+> You are responsible for any charges made to your AWS account.  While we have tested the shutdown script and believe it to be robust, you are responsible for monitoring the EC2 cluster to make sure resources have shutdown properly. We have alternate directions to shutdown resources using the console in the Q&A section.
 
 
 
@@ -328,8 +328,8 @@ Here is the command to run it:
 
     aws cloudformation create-stack --stack-name setup-account-stack --template-body file://setup-account.yaml --parameters ParameterKey=emailAddress,ParameterValue=YOUR_EMAIL_ADDRESS
 
-[!NOTE]
-Be sure to double check the email address is correct! 
+> [!NOTE]
+> Be sure to double check the email address is correct! 
 
 After running the aws cloudformation command, you can monitor the installation process by logging into your AWS account and navigating to the [CloudFormation console](https://console.aws.amazon.com/cloudformation).
 Make sure you are in the us-east-1 region (You can select the region in the top right corner of the console page).
@@ -482,8 +482,8 @@ In case you wish to create a different bucket, here is a command to create a buc
 aws s3api create-bucket --bucket comp24-satcomp-examples
 ```
 
-[!NOTE]
- 
+Please note:
+
 - This will create the bucket in the AWS region specified in your named profile
 
 - If you chose a different region than `us-east-1`, you might get an `IllegalLocationConstraintException`. To deal with the problem, you have to append the argument `--create-bucket-configuration {"LocationConstraint": "YOUR-REGION-NAME"}` to the command, where `YOUR-REGION-NAME` is replaced with the name of the region you chose.
@@ -508,8 +508,8 @@ ACCOUNT_NUMBER.dkr.ecr.us-east-1.amazonaws.com/comp24
 
 You will use these URIs to describe where to store our Docker images in AWS.  
 
-[!NOTE]
-A good way to make sure that you type these URI names correctly is to navigate to the Elastic Container Registry (ECR) console in AWS and copy them from the page (the names are in the URI column).   
+> [!NOTE]
+> A good way to make sure that you type these URI names correctly is to navigate to the Elastic Container Registry (ECR) console in AWS and copy them from the page (the names are in the URI column).   
 
 To store a Docker image in ECR from your local machine, first you need to login to ECR:
 

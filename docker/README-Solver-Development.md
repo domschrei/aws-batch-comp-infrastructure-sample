@@ -6,7 +6,7 @@ This README covers the process of building your solver and embedding it in docke
 
 Platforms Amazon Linux 2 (AL2), Ubuntu 20, and Mac OS Sierra have been tested successfully. Builds on other platforms may work, but have not been tested.
 
-To build and run solvers, you will need the following tools installed:
+To build and run solvers for the AWS infrastructure, you will need the following tools installed:
 
 - [python3](https://www.python.org/) (3.8 or newer). To install the latest version for your platform, go to the [downloads](https://www.python.org/downloads/) page.
 - [docker](https://www.docker.com/).  There is a button to download Docker Desktop on the main page.
@@ -20,8 +20,8 @@ This example covers two configurations: parallel (single node, multiple cores) a
 
 We use [Mallob](https://github.com/domschrei/mallob) as the running example for both parallel and distributed solvers. This example pulls a version of Mallob that we have tested with the AWS infrastructure. 
 
-[!NOTE]
-Note that while the Mallob repository above is released under the MIT-0 license, the Dockerfiles use the Mallob project.  Mallob and the solvers it uses have other licenses, including the [LGPL 3.0](https://opensource.org/license/lgpl-3-0/) license.
+> [!NOTE]
+> Note that while the Mallob repository above is released under the MIT-0 license, the Dockerfiles use the Mallob project.  Mallob and the solvers it uses have other licenses, including the [LGPL 3.0](https://opensource.org/license/lgpl-3-0/) license.
 
 This section proceeds in three steps:
 - Building base SATcomp Docker images
@@ -85,8 +85,8 @@ Before running mallob we need to create a docker bridge network that our contain
 
 To run parallel Mallob, navigate to the `runner` directory. We have created a simple shell script called `run_parallel.sh`, that you will use to run the mallob_parallel docker image, starting a container and running a SAT/SMT problem in the container. The script has two variables that can be configured if you wish (described in Q&A) but are set to sensible defaults.  
 
-[!IMPORTANT]
-Because the docker image runs as a different user and group than the local host, you need to set the directory permissions so that Docker image can read and write to the directory.  Run: `sudo chgrp -R 1000 . && chmod 775 .` from the `docker/runner` directory so that the container can access this portion of the filesystem..
+> [!IMPORTANT]
+> Because the docker image runs as a different user and group than the local host, you need to set the directory permissions so that Docker image can read and write to the directory.  Run: `sudo chgrp -R 1000 . && chmod 775 .` from the `docker/runner` directory so that the container can access this portion of the filesystem..
  
 The `run_parallel.sh` script requires two command-line arguments.
 - <docker_image_name>, which is `satcomp-mallob` for this example. 
@@ -125,8 +125,8 @@ At this point, you can perform additional experiments or exit the docker shell.
 
 The competition infrastructure starts solver containers and keeps them running for multiple queries. Each query will have a new `input.json` file, and `/container/solver` will be run again.
 
-[!NOTE]
-When debugging your own solver, the key step (other than making sure your solver ran correctly) is to ensure that you clean up resources between runs of the solver.  You should ensure that no solver processes are running and any temporary files are removed between executions.  During the competition, the docker images will be left running throughout and each SAT/SMT problem will be injected into the running container.  You are responsible for cleaning up files and processes created by your solver.   In the case of Mallob, it performs the cleanup of temporary files for the leader when the solver starts (rather than when it finishes), so that you can inspect them after the solver completes execution.  
+> [!NOTE]
+> When debugging your own solver, the key step (other than making sure your solver ran correctly) is to ensure that you clean up resources between runs of the solver.  You should ensure that no solver processes are running and any temporary files are removed between executions.  During the competition, the docker images will be left running throughout and each SAT/SMT problem will be injected into the running container.  You are responsible for cleaning up files and processes created by your solver.   In the case of Mallob, it performs the cleanup of temporary files for the leader when the solver starts (rather than when it finishes), so that you can inspect them after the solver completes execution.  
 
 To check for orphaned jobs, use the `ps -ax` in both the leader and worker containers.  This should show you all running processes. Make sure there aren't any stray processes that continue execution.   In addition, check all the locations in the container where your solver places temporary files in order to make sure that they are removed after the run.
 
