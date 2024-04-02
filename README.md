@@ -111,7 +111,7 @@ SMT-Comp Cloud:
 * [SMTS Portfolio](https://github.com/usi-verification-and-security/aws-smts/tree/cloud-portfolio)
 * [Vampire](https://github.com/vprover/vampire/tree/smtcomp22)
 
---->
+-->
 
 ## FAQ
 
