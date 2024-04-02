@@ -120,7 +120,7 @@ If something goes wrong and you want to start over, simply run the `delete-solve
 This will delete the infrastructure and associated resources.  
 
 > [!CAUTION]
-> This deletion includes any files that have been uploaded to your S3 bucket and also any ECR docker images that you have created.** It will not delete your AWS account or security credentials.
+> This deletion includes any files that have been uploaded to your S3 bucket and also any ECR docker images that you have created. It will not delete your AWS account or security credentials.
 
 Next, you will create the AWS infrastructure necessary to build and test solvers. The SAT and SMT competitions both use the following infrastructure elements.  These should "just work", but there is more information about the different parts of the infrastructure in the FAQ.  To set up your resouces, simply run the  `create-solver-infrastructure` script that we have provided.
 
