@@ -89,14 +89,14 @@ To run parallel Mallob, navigate to the `runner` directory. We have created a si
 > Because the docker image runs as a different user and group than the local host, you need to set the directory permissions so that Docker image can read and write to the directory.  Run: `sudo chgrp -R 1000 . && chmod 775 .` from the `docker/runner` directory so that the container can access this portion of the filesystem..
  
 The `run_parallel.sh` script requires two command-line arguments.
-- <docker_image_name>, which is `satcomp-mallob` for this example. 
-- <query_file>, which is the name of the test file for the solver.  If you use the defaults, you should put SAT/SMT files in the docker/runner/experiment subdirectory, and if you run the script from the `runner` directory, then you can use standard shell completion for paths.
+- `DOCKER_IMAGE_NAME`, which is `satcomp-mallob` for this example. 
+- `QUERY_FILE`, which is the name of the test file for the solver.  If you use the defaults, you should put SAT/SMT files in the `docker/runner/experiment` subdirectory, and if you run the script from the `runner` directory, then you can use standard shell completion for paths.
 
 To run the script with the `test.cnf` file we provided, call `run_parallel.sh satcomp-mallob experiment/test.cnf` from within the `runner` directory. After creating a container, the script will drop you into a bash shell for this container.
 
 The script will create an `input.json` file in the host run directory. This file will be copied to the docker run directory `/rundir`, where it will be read by the solver script.
 
-The script comments explain the various arguments to the `docker run` command. The `docker run` invocation uses bash as the docker entrypoint and passes `init_solver.sh` as a command to bash. The initialization script starts sshd and then runs `/competition/solver /rundir`, which will execute the solver on the query in `<query_file>`. At this point, you should see mallob's STDOUT and STDERR on the terminal as mallob runs the solver query. 
+The script comments explain the various arguments to the `docker run` command. The `docker run` invocation uses bash as the docker entrypoint and passes `init_solver.sh` as a command to bash. The initialization script starts sshd and then runs `/competition/solver /rundir`, which will execute the solver on the query in `QUERY_FILE`. At this point, you should see mallob's STDOUT and STDERR on the terminal as mallob runs the solver query. 
 
 ### Running Distributed Mallob
 
@@ -104,7 +104,7 @@ Running distributed mallob requires two docker invocations running in two differ
 
 To run distributed Mallob, again cd into the `runner` directory. You will use two shell scripts, `run_dist_worker.sh` and `run_dist_leader.sh`. 
 
-- Step 1. Invoke `run_dist_worker.sh`, which requires a single command-line argument <docker_image_name>, which is `satcomp-mallob` for this example. Notice that the script will launch a `satcomp-mallob:worker` container. You will be dropped into a bash shell for the worker container. No further commands are needed.
+- Step 1. Invoke `run_dist_worker.sh`, which requires a single command-line argument `DOCKER_IMAGE_NAME`, which is `satcomp-mallob` for this example. Notice that the script will launch a `satcomp-mallob:worker` container. You will be dropped into a bash shell for the worker container. No further commands are needed.
 - Step 2. From a different terminal on the host machine (in the same `runner` directory), invoke `run_dist_leader.sh` This script requires the same two command-line arguments as `run_parallel.sh` in the previous section. For example, you can call `run_dist_leader.sh satcomp-mallob experiment/test.cnf`
 
 The `run_dist_leader` script will again create an `input.json` file, with more fields than used for parallel mallob. Again, you should see mallob output on the terminal.
@@ -321,10 +321,9 @@ A: The two variables to change are:
 
 These are both documented in the script files.
 
-
 ### Q: After a while, I have lots of old versions of Docker images that are taking up disk space that I no longer need.  How do I get rid of them?
 
-A: On repeated image builds, previously-built images with the same name will be left with the name/tag as `<none>/<none>`. Docker dangling images can be deleted with `docker image prune`. A specific image can be deleted by running `docker rmi <IMAGE ID>`. 
+A: On repeated image builds, previously-built images with the same name will be left with the name/tag as `<none>/<none>`. Docker dangling images can be deleted with `docker image prune`. A specific image can be deleted by running `docker rmi <IMAGE_ID>`. 
 
 Note that you can delete all docker images on your machine by running `docker rmi -f $(docker images -a -q)`. Be careful: only do this after running `docker images` to check that you won't delete images unrelated to the solver competition. 
 

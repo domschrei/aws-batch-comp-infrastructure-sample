@@ -136,7 +136,7 @@ The script will take 5-10 minutes. When complete, all of the needed cloud resour
 
 ### Creating the Base Docker Leader and Worker Images for Solvers
 
-See the [SAT-Comp Docker Images README.md file](../docker/README.md) in the `docker` directory for instructions on how to build and test Docker images.
+See the [Solver Development README](../docker/README-Solver-Development.md) in the `docker` directory for instructions on how to build and test Docker images.
 
 ### Storing Solver Images in the ECR repository
 
@@ -144,7 +144,7 @@ Amazon stores your solver images in the [Elastic Container Registry (ECR)](https
 
 The `create-solver-infrastructure` command described earlier creates an ECR repository with the same name as the project (`comp24` is the default).
 
-This repository will store the images for the leader and worker.  Once you have created and tested a docker image (or images, for the cloud leader and worker) as described in the [SAT-Comp Docker Images README.md file](../Docker/README.md), you can upload them to your AWS account with the `ecr-push` script:
+This repository will store the images for the leader and worker.  Once you have created and tested a docker image (or images, for the cloud leader and worker) as described in the [Solver Development README](../docker/README-Solver-Development.md), you can upload them to your AWS account with the `ecr-push` script:
 
 ```text
 ./ecr-push [--leader LEADER_IMAGE_TAG] [--worker WORKER_IMAGE_TAG]
