@@ -1,7 +1,5 @@
 # SAT-Comp and SMT-Comp Parallel and Cloud Track Instructions
 
-**(2024 updates coming soon!)**
-
 Welcome to [SAT-comp](https://satcompetition.github.io/2024/) and [SMT-Comp 2024](https://smt-comp.github.io/2024/)!
 
 This repository will help you get your parallel or distributed solver running on AWS. You will first build docker containers with your solver and then connect them to the AWS infrastructure.
