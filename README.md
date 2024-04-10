@@ -9,7 +9,7 @@ We recommend that you work in four steps:
 1. Create and configure an AWS Account for the competition (instructions below).  Please do this right away and send us an email, so we can start the process to give you AWS credits.  You can then continue with step 2 while waiting for us to answer. 
 2. Build your solver as a Docker image and run experiments locally. See the [Solver Development README](docker/README-Solver-Development.md).
 3. Set up AWS infrastructure and test your solver on the cloud. See the [Infrastructure README](infrastructure/README-Infrastructure.md)
-4. When ready, share the solver repository and Docker image with us.
+4. When ready, email us with a link to your solver repository.
 
 ## Creating an AWS Account
 
@@ -25,10 +25,10 @@ It is important that you tell us your account number immediately after creating 
 
 Next, it is time to develop your solver!  All of the development and most of the testing can be performed on a local laptop, so it is not necessary to wait for AWS credits to get started.  Please see the instructions in the [Solver Development README](docker/README-Solver-Development.md) on how to start building and testing your solver.
 
-## For Returning Competitors:
+## For Returning Competitors
 You should find the developer experience similar to 2023. We will note any changes here.
 
-## Additional Resources: Analysis Problems
+## Problems from Previous Competitions
 
 You can find SAT problems from recent competitions here:
 - [2020](https://satcompetition.github.io/2020/downloads.html)
@@ -42,12 +42,13 @@ You can find SMT problems from recent competitions here:
 - [2022](https://smt-comp.github.io/2022/benchmarks.html)
 - [2023](https://smt-comp.github.io/2023/benchmarks.html)
 
+## Solver Entrants from Previous Competitions
 
-## Additional Resources: Previous Entrants
+Here are the github repositories for some previous solver entrants. You may find these helpful.
 
-Here are the github repositories for the 2023 solvers. You may find these useful as you connect your solver to the AWS cloud infrastructure.
+### 2023
 
-SAT-Comp Parallel: 
+#### SAT-Comp Parallel 
 * [DPS](https://github.com/nabesima/DPS-satcomp2023)
 * [Gimsatul](https://github.com/arminbiere/gimsatul/tree/master/aws/sc2023)
 * [Mallob-1](https://github.com/domschrei/aws-batch-comp-infrastructure-sample/tree/mallob23-parallel-1)
@@ -58,32 +59,31 @@ SAT-Comp Parallel:
 * [NPS](https://github.com/nabesima/DPS-satcomp2023/tree/non-det)
 * [Pahkis23](https://github.com/KTRDeveloper/Pahkis23)
 * [PakisInc23](https://github.com/KTRDeveloper/PakisInc23)
-* [pDisKS-step (dead link)](https://github.com/sat-team-2023/pKisDS)
-* [pKisDS (dead link)](https://github.com/sat-team-2023/pKisDS)
+* [pDisKS-step](https://github.com/sat-team-2023/pKisDS)  (dead link)
+* [pKisDS](https://github.com/sat-team-2023/pKisDS)  (dead link)
 * [PKISSAT-RS-2G](https://github.com/vvallade/painless-sat-competition-2023/tree/main)
 * [PKISSAT-RS-STR](https://github.com/vvallade/painless-sat-competition-2023/tree/str)
 * [PRS-sc23](https://github.com/shaowei-cai-group/PRS-sc23/tree/PRS-sc23)
 * [PRS-nopre-sc23](https://github.com/shaowei-cai-group/PRS-sc23/tree/PRS-nopre-sc23)
 
-SAT-Comp Cloud:
+#### SAT-Comp Cloud
 * [Mallob](https://github.com/domschrei/aws-batch-comp-infrastructure-sample/tree/mallob23-cloud)
 * [Mallob-lin](https://github.com/solimul/mallob-lin)
 * [PRS-distributed-sc23](https://github.com/shaowei-cai-group/PRS-sc23/tree/PRS-distributed-sc23)
 
 
-SMT-Comp Parallel:
+#### SMT-Comp Parallel
 * [Vampire-parallel](https://github.com/vprover/vampire/tree/smtcomp23/dockers)
 * [z3-owl](https://github.com/ZJU-Automated-Reasoning-Group/arlib)
 
-SMT-Comp Cloud:
+#### SMT-Comp Cloud
 * [cvc5-cloud](https://github.com/amaleewilson/smtcomp23)
 * [Vampire-cloud](https://github.com/vprover/vampire/tree/smtcomp23/dockers)
 
 
-<!---
 ### 2022
 
-SAT-Comp Parallel: 
+#### SAT-Comp Parallel
 * [DPS-Kissat](https://github.com/nabesima/DPS-satcomp2022)
 * [gimsatul](https://github.com/arminbiere/gimsatul)
 * [Mallob-ki](https://github.com/domschrei/isc22-mallob/tree/ki)
@@ -94,22 +94,20 @@ SAT-Comp Parallel:
 * [PaKis22](https://github.com/KTRDeveloper/PaKis22)
 * [PaKisMAB22](https://github.com/KTRDeveloper/PaKisMAB22)
 
-SAT-Comp Cloud:
+#### SAT-Comp Cloud
 * [Mallob-kicaliglu](https://github.com/domschrei/isc22-mallob/tree/kicaliglu)
 * [Paracooba](https://github.com/maximaximal/paracooba-satcomp22)
 
-SMT-Comp Parallel:
+#### SMT-Comp Parallel
 * [SMTS Cube and Conquer](https://github.com/usi-verification-and-security/aws-smts/tree/parallel-cube-and-conquer-fixed)
 * [SMTS Portfolio](https://github.com/usi-verification-and-security/aws-smts/tree/parallel-portfolio)
 * [Vampire](https://github.com/vprover/vampire/tree/smtcomp22)
 
-SMT-Comp Cloud:
+#### SMT-Comp Cloud
 * [cvc5-cloud](https://github.com/amaleewilson/aws-satcomp-solver-sample/tree/cvc5)
 * [SMTS Cube and Conquer](https://github.com/usi-verification-and-security/aws-smts/tree/cloud-cube-and-conquer-fixed)
 * [SMTS Portfolio](https://github.com/usi-verification-and-security/aws-smts/tree/cloud-portfolio)
 * [Vampire](https://github.com/vprover/vampire/tree/smtcomp22)
-
--->
 
 ## FAQ
 
