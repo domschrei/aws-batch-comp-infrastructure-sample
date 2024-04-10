@@ -1,4 +1,4 @@
-# /bin/bash
+#!/bin/bash
 
 # run_parallel.sh: Use this script to launch Docker container 
 #                  for parallel Mallob. Arguments:

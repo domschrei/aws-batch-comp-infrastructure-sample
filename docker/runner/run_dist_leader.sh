@@ -1,4 +1,4 @@
-# /bin/sh
+#!/bin/bash
 
 # run_dist_leader.sh: Use this script to launch Docker container 
 #                     for parallel Mallob. Arguments:

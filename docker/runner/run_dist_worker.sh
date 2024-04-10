@@ -1,4 +1,4 @@
-# /bin/sh
+#!/bin/sh
 
 # check number arguments
 if [[ $# -lt 1 ]]; then
