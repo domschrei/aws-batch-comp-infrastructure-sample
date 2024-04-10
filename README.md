@@ -19,7 +19,7 @@ If you have previously created an AWS account for other purposes, we strongly ad
 
 To find your account ID, click on your account name in the top right corner, and then click "My Account". You should see Account ID in the Account Settings
 
-It is important that you tell us your account number immediately after creating the account, so that we can assign you a resource budget for your experiments. We also need to grant you access to the shared problem sets. Once we hear from you, we will email you an acknowledgment when resources have been added to your account.  
+It is important that you tell us your account number immediately after creating the account, so that we can request AWS credit for your experiments. Once we hear from you, we will acknowledge your email and submit an internal request for your account. We will email again when the credit has been added to your account.
 
 ## Building Your Solver
 
