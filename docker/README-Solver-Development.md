@@ -36,7 +36,7 @@ To begin, navigate to the `satcomp-images` directory and execute the `build_satc
 
 ### Checking Docker Build Results
 
-After buliding the docker images, check to make sure the images have built successfully:
+After building the docker images, check to make sure the images have built successfully:
 
 1. Run `docker image ls` or `docker images`
 2. Make sure that you see `satcomp-infrastructure:common`, `satcomp-infrastructure:leader`, and `satcomp-infrastructure:worker` in the list of images.
@@ -83,7 +83,7 @@ Before running mallob we need to create a docker bridge network that our contain
 
 ### Running Parallel Mallob
 
-To run parallel Mallob, navigate to the `runner` directory. We have created a simple shell script called `run_parallel.sh`, that you will use to run the mallob_parallel docker image, starting a container and running a SAT/SMT problem in the container. The script has two variables that can be configured if you wish (described in Q&A) but are set to sensible defaults.  
+To run parallel Mallob, navigate to the `runner` directory. We have created a simple shell script called `run_parallel.sh`, that you will use to run the `mallob_parallel` docker image, starting a container and running a SAT/SMT problem in the container. The script has two variables that can be configured if you wish (described in Q&A) but are set to sensible defaults.  
 
 > [!IMPORTANT]
 > Because the docker image runs as a different user and group than the local host, you need to set the directory permissions so that Docker image can read and write to the directory.  Run: `sudo chgrp -R 1000 . && chmod 775 .` from the `docker/runner` directory so that the container can access this portion of the filesystem..
@@ -102,7 +102,7 @@ The script comments explain the various arguments to the `docker run` command. T
 
 Running distributed mallob requires two docker invocations running in two different terminal windows: one to start a leader container and one to start a worker container. 
 
-To run distributed Mallob, again cd into the `runner` directory. You will use two shell scripts, `run_dist_worker.sh` and `run_dist_leader.sh`. 
+To run distributed Mallob, again navigate to the `runner` directory. You will use two shell scripts, `run_dist_worker.sh` and `run_dist_leader.sh`. 
 
 - Step 1. Invoke `run_dist_worker.sh`, which requires a single command-line argument `DOCKER_IMAGE_NAME`, which is `satcomp-mallob` for this example. Notice that the script will launch a `satcomp-mallob:worker` container. You will be dropped into a bash shell for the worker container. No further commands are needed.
 - Step 2. From a different terminal on the host machine (in the same `runner` directory), invoke `run_dist_leader.sh` This script requires the same two command-line arguments as `run_parallel.sh` in the previous section. For example, you can call `run_dist_leader.sh satcomp-mallob experiment/test.cnf`
@@ -126,13 +126,13 @@ At this point, you can perform additional experiments or exit the docker shell.
 The competition infrastructure starts solver containers and keeps them running for multiple queries. Each query will have a new `input.json` file, and `/container/solver` will be run again.
 
 > [!NOTE]
-> When debugging your own solver, the key step (other than making sure your solver ran correctly) is to ensure that you clean up resources between runs of the solver.  You should ensure that no solver processes are running and any temporary files are removed between executions.  During the competition, the docker images will be left running throughout and each SAT/SMT problem will be injected into the running container.  You are responsible for cleaning up files and processes created by your solver.   In the case of Mallob, it performs the cleanup of temporary files for the leader when the solver starts (rather than when it finishes), so that you can inspect them after the solver completes execution.  
+> When debugging your own solver, the key step (other than making sure your solver ran correctly) is to ensure that you clean up resources between runs of the solver.  You should ensure that no solver processes are running and any temporary files are removed between executions.  During the competition, the docker images will be left running throughout and each SAT/SMT problem will be injected into the running container.  You are responsible for cleaning up files and processes created by your solver. In the case of Mallob, it performs the cleanup of temporary files for the leader when the solver starts (rather than when it finishes), so that you can inspect them after the solver completes execution.  
 
-To check for orphaned jobs, use the `ps -ax` in both the leader and worker containers.  This should show you all running processes. Make sure there aren't any stray processes that continue execution.   In addition, check all the locations in the container where your solver places temporary files in order to make sure that they are removed after the run.
+To check for orphaned jobs, use the `ps -ax` in both the leader and worker containers. This should show you all running processes. Make sure there aren't any stray processes that continue execution. In addition, check all the locations in the container where your solver places temporary files in order to make sure that they are removed after the run.
 
 If your solver doesn't run correctly in the docker container, you can remove the `/container/solver` commands from the `init_solver.sh` files. Once you are dropped into the docker container's bash shell, you can explore and debug directly, including running `/container/solver /rundir` from the container shell command line.
 
-We have now run, debugged, and inspected a sample solver.  It is a good idea to try out multiple problem files, inspect the results, and try running in both cloud and parallel configurations.  Once you are comfortable with these interactions, it is time to start working on your own solver.
+We have now run, debugged, and inspected a sample solver. It is a good idea to try out multiple problem files, inspect the results, and try running in both cloud and parallel configurations. Once you are comfortable with these interactions, it is time to start working on your own solver.
 
 # Preparing Your Own Solver Images
 
@@ -144,7 +144,7 @@ In this section, we'll talk about how to build your own solvers into Docker cont
 
 Your solver must be buildable from source code using a standard process. We use Docker to create a build process that can easily be standardized. Docker removes many of the platform-specific problems with building under one operating system and running in another.
 
-You will provide a GitHub repo with a Dockerfile in the top directory that we will use to build your solver. This first section of this README constructed just such a solver.  In this guide, we start by building and running the solver locally, then once it is working properly, we will use the [Infrastructure README](../infrastructure/README-Infrastructure.md) to test it using AWS resources.  We will use the same process to host your solver during the competition.
+You will provide a GitHub repository with a Dockerfile in the top directory that we will use to build your solver. This first section of this README constructed just such a solver.  In this guide, we start by building and running the solver locally, then once it is working properly, we will use the [Infrastructure README](../infrastructure/README-Infrastructure.md) to test it using AWS resources.  We will use the same process to host your solver during the competition.
 
 For the cloud track, you will need to supply two Dockerfiles for your solver, one that acts as a Leader Node and one that acts as a Worker Node. In the case of a parallel solver, you only need to provide a single image, which we will also call a Leader Node for convenience.
 
@@ -182,9 +182,9 @@ Here is an example of the `input.json` file for cloud mallob:
 where: 
 * `formula_file` is the path to the SAT/SMT problem to be solved.
 * `formula_language` is the encoding of the problem (currently we use DIMACS for SAT-Comp and SMTLIB2 for SMT-Comp).  This field is optional and can be ignored by the solver.
-* `solver_argument_list` allows passthrough of arguments to the solver.  This allows you to try different strategies without rebuilding your docker container by varying the arguments.
+* `solver_argument_list` arguments to pass through to the solver.  This allows you to try different strategies without rebuilding your docker container by varying the arguments.
 * `timeout_seconds` is the timeout for the solver.  It will be enforced by the infrastructure; a solver that doesn't complete within the timeout will be terminated.
-* `worker_node_ips` is unchanged; for cloud solvers, it is the list of worker nodes.  For parallel solvers this field will be the empty list.
+* `worker_node_ips` for cloud solvers, is the list of worker node IP addresses. For parallel solvers this field will be the empty list.
 
 For the interactive example in the first section, this file is generated by the [`run_parallel.sh`](runner/run_parallel.sh) script. 
 
@@ -193,20 +193,20 @@ Here is an example of `solver_out.json` from distributed mallob:
 
 ```text
 {
-  "return_code": int,      // The return code for the solver.
+  "return_code": -1,                     // int: The return code for the solver.
   "artifacts": {
-    "stdout_path": String, // Where to find the stdout of the solve run
-    "stderr_path": String  // Where to find the stderr of the solve run
+    "stdout_path": "/rundir/stdout.log", // string: where to find the stdout of the solve run
+    "stderr_path": "/rundir/stderr.log"  // string: where to find the stderr of the solve run
   }
 }
 ```
 
 where:
-* `return_code` is the return code for the solver.  **N.B.**: The return_code in `solver_out.json` will determine the satisfiability of the problem for the solver: A return code of 10 indicates SAT, 20 indicates UNSAT, 0 indicates UNKNOWN, and all other return codes indicate an error.
+* `return_code` is the return code for the solver. **Note**: The `return_code` in `solver_out.json` will determine the satisfiability of the problem for the solver: A return code of 10 indicates SAT, 20 indicates UNSAT, 0 indicates UNKNOWN, and all other return codes indicate an error.
 * `stdout_path` is the path to the stdout log.
 * `stderr_path` is the path to the stderr log.
 
-You will adapt the Mallob `solver` script to invoke your solver and coordinate with Worker nodes. You should extend the competition base image by copying your `solver` script to a new container that is based on the Competition Base Container.
+You will adapt the Mallob `solver` script to invoke your solver and coordinate with worker nodes. You should extend the competition base image by copying your `solver` script to a new container that is based on the Competition Base Container.
 
 For example:
 
@@ -238,8 +238,8 @@ Here is an example of the format for `worker_node_status.json`:
 
 ```text
 {
-    "status": "READY",  // one of {"READY", "BUSY", "ERROR"}
-    "timestamp": "1644545117" // linux epoch time as returned by the C time() function
+    "status": "READY",         // one of {"READY", "BUSY", "ERROR"}
+    "timestamp": "1644545117"  // linux epoch time as returned by the C time() function
 }
 ```
 
@@ -279,7 +279,7 @@ After building your solvers, please test them using Docker, as we did with Mallo
 
 ## FAQ / Troubleshooting
 
-### Q: What is the build_mallob_images.sh script doing?  What do the flags for docker build mean?
+### Q: What is the `build_mallob_images.sh` script doing?  What do the flags for docker build mean?
 
 The script looks like this: 
 
@@ -313,7 +313,7 @@ Note that there is also a `nocache_build_mallob_images.sh` script.  Although Doc
 2. Run `docker build -t satcomp-mallob:worker .`  This Dockerfile adds scripts necessary to use Mallob as the worker node in a distributed solver to the generated image.
 
 
-### Q: Suppose I want to change the directory or network name for the run_parallel and run_cloud scripts.  How do I do this?
+### Q: Suppose I want to change the directory or network name for the `run_parallel.sh` and `run_dist_*.sh` scripts. How do I do this?
 
 A: The two variables to change are: 
 - `DOCKER_NETWORK`. Name of the docker bridge network. The default is  `mallob-test`, which will work with the `network create` command in the previous section.  
