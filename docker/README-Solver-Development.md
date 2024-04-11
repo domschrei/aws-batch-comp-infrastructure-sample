@@ -4,7 +4,7 @@ This README covers the process of building your solver and embedding it in docke
 
 ## Prerequisites
 
-Platforms Amazon Linux 2 (AL2), Ubuntu 20, and Mac OS Sierra have been tested successfully. Builds on other platforms may work, but have not been tested.
+Platforms Amazon Linux 2 (AL2), Ubuntu 20, Ubuntu 22, and Mac OS Sierra have been tested successfully. Builds on other platforms may work, but have not been tested.
 
 To build and run solvers for the AWS infrastructure, you will need the following tools installed:
 
