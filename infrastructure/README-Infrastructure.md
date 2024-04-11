@@ -7,7 +7,7 @@ You will proceed through the following steps.
 * [Mallob Quickstart](#mallob-quickstart).  This will run through all the steps using just two scripts so that you can get an example cloud solver up and running quickly.  We will then explain the steps in more detail.
 * [Managing AWS Solver Infrastructure](#managing-solver-infrastructure).  This section describes the infrastructure creation process in more detail, and how you can switch between parallel and cloud configurations for testing.
 * [Preparing Docker Images for Upload to AWS](#preparing-docker-images).  This section describes how to upload your solver to AWS.
-* [Storing Analysis Problems in the Cloud](#storing-analysis-problems-in-the-cloud).  This section describes how we store problems for your solver in S3, AWS storage service.
+* [Storing Analysis Problems in the Cloud](#storing-analysis-problems-in-the-cloud).  This section describes how we store problems for your solver in S3, the AWS cloud object storage service.
 * [Running your Solver in the Cloud](#running-your-solver).  This section describes how we run your solver on the AWS cloud.
 
 Additional resources are available in a FAQ:
@@ -22,11 +22,11 @@ To use the AWS infrastructure, you will need the following tools installed:
 
 - [python3](https://www.python.org/) (3.8 or later): To install the latest version for your platform, go to the [downloads](https://www.python.org/downloads/) page.
 - [docker](https://www.docker.com/): There is a button to download Docker Desktop on the main page.
-- [boto3](https://aws.amazon.com/sdk-for-python/): Once you have python3 installed (above), you can install this with `pip3 install boto3`. 
+- [boto3](https://aws.amazon.com/sdk-for-python/): Once you have Python 3.8+ installed (above), you can install the boto3 library with `pip3 install boto3`. 
 
 Basic knowledge of AWS accounts and services is helpful, but we will walk you through all of the necessary steps. 
 
-We recommend that your development environment be hosted on Mac OS Sonoma, Amazon Linux 2 (AL2) or Ubuntu 20. Other platforms may work, but have not been tested. The competition itself runs on AL2.
+We recommend that your development environment be hosted on Mac OS Sonoma, Amazon Linux 2 (AL2), Ubuntu 20, or Ubuntu 22. Other platforms may work, but have not been tested. The competition itself runs on AL2.
 
 ### Installing the AWS CLI
 
@@ -63,7 +63,7 @@ We recommend that when you've completed AWS account set-up, you follow the steps
 
 ## Mallob Quickstart
 
-To enable you to get an example solver up and running quickly, we have created two commands to provide a quick start to getting a Mallob container running in AWS.  The first command: `quickstart-build` creates the AWS infrastructure for a cloud solver, builds the Mallob docker images, and uploads them to AWS.  The second command: `quickstart-run` creates a cluster to run with four nodes (1 leader and 3 workers). If it is not already running, it waits for the cluster to be ready, then submits a solving job and reads the response from the output queue.  After you test  mallob using these commands, you should go through the rest of the README to see the steps that Mallob performs so that you can do this with your own solver.  
+To enable you to get an example solver up and running quickly, we have created two commands to provide a quick start to getting a Mallob container running in AWS.  The first command: `quickstart-build` creates the AWS infrastructure for a cloud solver, builds the Mallob docker images, and uploads them to AWS.  The second command: `quickstart-run` creates a cluster to run with four nodes (1 leader and 3 workers). If it is not already running, it waits for the cluster to be ready, then submits a solving job and reads the response from the output queue.  After you test  Mallob using these commands, you should go through the rest of the README to see the steps that Mallob performs so that you can do this with your own solver.  
 
 ### Quickstart Build
 
@@ -77,13 +77,13 @@ This command will require 10-20 minutes to run.  Once it is complete, Mallob sho
 
 ### Quickstart Run
 
-This command will spin up a cluster, submit a job to run called `test.cnf` that we uploaded to a storage location in S3 (the AWS storage service), and wait for the result, then spins down the cluster.  The form of the command is: 
+This command will spin up a cluster, submit a job to run called `test.cnf` that we uploaded to a storage location in S3 (the AWS Cloud Object Storage service), and wait for the result, then spins down the cluster.  The form of the command is: 
 
 ```text
 ./quickstart-run 
 ```
 
-Once the solver is completed, you should see a message back from the solver that the problem was completed and that the result was SATISFIABLE.  Later on we will show you how to monitor a run using an AWS service called _CloudWatch_ and extract the intermediate files produced by the run, including the stdout and stderr logs, using an AWS service called _S3_.  
+Once the solver is completed, you should see a message back from the solver that the problem was completed and that the result was SATISFIABLE.  Later on we will show you how to monitor a run using an AWS service called _CloudWatch_ and extract the intermediate files produced by the run, including the stdout and stderr logs, using S3.
 
 Voila!
 
@@ -122,7 +122,7 @@ This will delete the infrastructure and associated resources.
 > [!CAUTION]
 > This deletion includes any files that have been uploaded to your S3 bucket and also any ECR docker images that you have created. It will not delete your AWS account or security credentials.
 
-Next, you will create the AWS infrastructure necessary to build and test solvers. The SAT and SMT competitions both use the following infrastructure elements.  These should "just work", but there is more information about the different parts of the infrastructure in the FAQ.  To set up your resouces, simply run the  `create-solver-infrastructure` script that we have provided.
+Next, you will create the AWS infrastructure necessary to build and test solvers. The SAT and SMT competitions both use the following infrastructure elements.  These should "just work", but there is more information about the different parts of the infrastructure in the FAQ.  To set up your resources, simply run the  `create-solver-infrastructure` script that we have provided.
 
 ```text
 ./create-solver-infrastructure --solver-type SOLVER_TYPE
@@ -347,28 +347,28 @@ Although it is handy to get emails when certain account budget thresholds have b
 
 No. If you are submitting to the parallel track only, you do not need a worker image.  For the parallel track, we will assume that the leader manages all threading and communications within the single (multi-core) compute node.
 
-#### Q: I attempted to use the quickstart-run or config-ecs, but the script keeps saying "Waiting for ECS" and not running my solver.  What happened?
+#### Q: I attempted to use the `quickstart-run` or `config-ecs`, but the script keeps saying "Waiting for ECS" and not running my solver.  What happened?
 
 If you just started the script, then it is likely that either the requested EC2 servers have not yet initialized, or that the ECS cluster has not yet started running on them. It typically takes 5-10 minutes for the resources to become available after they are requested.  If it takes longer than 15 minutes, there is a problem.  Either the region has entirely run out of resources (unlikely), or your account does not have a high enough resource cap to support the cluster you have requested.  See the Q&A for "How do I make sure I have enough vCPU capacity in my account to run my experiments?".
 
 If you have sufficient capacity in your account and are still seeing this message, please contact us via email so that we can investigate.
 
 #### Q: How do I make sure I have enough vCPU capacity in my account to run my experiments?
-EC2 sets default capacity limits on the number of compute nodes that are available to an account.  **N.B.**: Recently accounts have come pre-configured with fewer vCPUs, even for USA and Europe, so this direction may be important for all regions.  
+EC2 sets default capacity limits on the number of compute nodes that are available to an account.  **Note**: Recently accounts have come pre-configured with fewer vCPUs, even for USA and Europe, so this direction may be important for all regions.  
 
-To check your account limits, navigate to the EC2 console for the account, and click on "Limits" on the left side. Type "Running On-Demand Standard" in the search bar and determine the current limit. The limit is specified in terms of vCPUs, so each m6i-4xlarge image uses 16 vCPUs, and every m6i-16xlarge uses 64 CPUs. If you need additional vCPUs, click on the "Running On-Demand Standard" link and request a limit increase.  Turnaround time is usually around 24 hours for these requests.  Additional information on requesting increases can be found in the following [video](https://www.youtube.com/watch?v=F4zE3yVp-gg).  **N.B. Running a large cluster can become expensive. Make sure you limit your large-scale testing to preserve your AWS credits.**
+To check your account limits, navigate to the EC2 console for the account, and click on "Limits" on the left side. Type "Running On-Demand Standard" in the search bar and determine the current limit. The limit is specified in terms of vCPUs, so each m6i-4xlarge image uses 16 vCPUs, and every m6i-16xlarge uses 64 CPUs. If you need additional vCPUs, click on the "Running On-Demand Standard" link and request a limit increase.  Turnaround time is usually around 24 hours for these requests.  Additional information on requesting increases can be found in the following [video](https://www.youtube.com/watch?v=F4zE3yVp-gg).  **Note: Running a large cluster can become expensive. Make sure you limit your large-scale testing to preserve your AWS credits.**
 
 
 #### Q: I submitted a job but nothing happens.  When I look in the logs, the leader keeps saying it is waiting for worker nodes and not running my solver.  What happened? ####
 
-If you were able to create the cluster successfully using ecs_config, then what has happened is that you submitted an SQS that asked for more workers than you configured when you set up your cluster.  Make sure that the number of worker nodes equals or exceeds the number of worker nodes that were requested in the SQS message. 
+If you were able to create the cluster successfully using `ecs-config`, then what has happened is that you submitted an SQS that asked for more workers than you configured when you set up your cluster.  Make sure that the number of worker nodes equals or exceeds the number of worker nodes that were requested in the SQS message. 
 
 #### Q: I'm watching the ECS cluster, but nothing is happening; no nodes are being created.  What happened?
 
 This can happen if you try to start up a cloud solver when the infrastructure is configured for parallel execution or vice versa.  In this case, the machine image where you want to deploy does not match the requirements of the ECS task.  Make sure that if you are running a cloud solver, you have not configured the infrastructure for parallel.  If you are unsure, you can always run `update-solver-infrastructure` with the expected type.  If the infrastructure is already set up for this type, it will be a no-op.
 
 
-#### Q: How do I manage my account after SAT-Comp if I want to follow security best practices?
+#### Q: How do I manage my account after SAT/SMT-Comp if I want to follow security best practices?
 
 If you continue using your AWS account after the competition, we recommend that you follow AWS best practices as described here:
     [https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#create-iam-users](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#create-iam-users)
@@ -386,7 +386,7 @@ Make sure that the region selected in the top-right of the console page is `us-e
 
 The leader infrastructure performs the following steps: 
 
-1. Pull and parse a message from the `ACCOUNT_NUMBER-us-east-1-SatCompQueue` SQS queue with the format described in the [Job Submission and Execution section](../infrastructure/README.md#fixme).  
+1. Pull and parse a message from the `ACCOUNT_NUMBER-us-east-1-SatCompQueue` SQS queue with the format described in the [Job Submission and Execution section](#job-submission-and-execution).  
 1. Pull the appropriate solver problem from S3 from the location provided in the SQS message.
 1. Wait until the requested number of workers have reported their status as READY along with their IP addresses.
 1. Create a working directory for this problem.
