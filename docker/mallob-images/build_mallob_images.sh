@@ -1,4 +1,7 @@
 # /bin/sh
+
+set -e
+
 cd common
 docker build -t satcomp-mallob:common .
 cd ..

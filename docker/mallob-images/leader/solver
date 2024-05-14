@@ -57,8 +57,7 @@ class Runner:
         hostfile_path = os.path.join(request_dir, 'combined_hostfile')
         with open(hostfile_path, 'w+') as f:
             for ip in ips:
-                f.write(f'{ip} slots=4') # distributed default
-                #f.write(f'{ip} slots=16') # parallel default
+                f.write(f'{ip} slots=1') # distributed and parallel default
                 f.write('\n')
             return hostfile_path
 
@@ -83,14 +82,17 @@ class MallobParser:
         """
         with open(output_file) as f:
             raw_logs = f.read()
+            if "s UNSATISFIABLE" in raw_logs:
+                return 20
+            if "s SATISFIABLE" in raw_logs:
+                return 10
+            if "found result SAT" in raw_logs:
+                return 10
             if "found result UNSAT" in raw_logs:
                 return 20
-            elif "found result SAT" in raw_logs:
-                return 10
-            elif "UNKNOWN" in raw_logs:
-                return 0
-            else:
+            if "[ERROR]" in raw_logs:
                 return -1
+            return 0
 
 if __name__ == "__main__":
     request_directory = sys.argv[1]
