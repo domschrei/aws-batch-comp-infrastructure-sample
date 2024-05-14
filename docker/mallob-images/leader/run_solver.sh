@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MAX_N_SOLVERS_PER_PROCESS=64
-MALLOB_IMPCHECK=true
+MALLOB_IMPCHECK=false # enable to use "ImpCheck" with on-the-fly LRAT checking
 
 export MALLOC_CONF="thp:always"
 export PATH=.:$PATH
@@ -33,8 +33,6 @@ if [[ "$nglobalprocs" -ge 100 ]]; then
     # cloud setup
     portfolio=kkkccl
     log_stdout_and_stderr "CLOUD SETUP (portfolio: $portfolio)"
-    MALLOB_IMPCHECK=false # TODO DISABLE THIS LINE and set MALLOB_IMPCHECK to true above
-                          #      if you want trusted solving in the cloud!
 fi
 if $MALLOB_IMPCHECK; then
     # TRUSTED setup with ImpCheck (with reduced number of threads where necessary)
@@ -45,7 +43,7 @@ if $MALLOB_IMPCHECK; then
 else
     # Usual setup
     otfcopts="-rspaa=1 -otfc=0 -max-lits-per-thread=60000000"
-    log_stdout_and_stderr "NORMAL SETUP (portfolio: $portfolio)"
+    log_stdout_and_stderr "DEFAULT SETUP (portfolio: $portfolio)"
 fi
 
 log_stdout_and_stderr "Running Mallob with $n_threads_per_process threads on $(hostname) as leader and with $nglobalprocs MPI processes in total"
