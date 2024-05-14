@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MAX_N_SOLVERS_PER_PROCESS=64
-MALLOB_IMPCHECK=false # enable to use "ImpCheck" with on-the-fly LRAT checking
+MALLOB_IMPCHECK=true # enable to use "ImpCheck" with on-the-fly LRAT checking
 
 export MALLOC_CONF="thp:always"
 export PATH=.:$PATH
