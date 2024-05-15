@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAX_N_SOLVERS_PER_PROCESS=64
+MAX_N_SOLVERS_PER_PROCESS=64 # limit set for Mallob at compile time
 MALLOB_IMPCHECK=false # enable to use "ImpCheck" with on-the-fly LRAT checking
 
 export MALLOC_CONF="thp:always"
@@ -28,23 +28,29 @@ if [ $n_threads_per_process -gt $MAX_N_SOLVERS_PER_PROCESS ]; then
     n_threads_per_process=$MAX_N_SOLVERS_PER_PROCESS
 fi
 
-portfolio="k" # default portfolio
-if [[ "$nglobalprocs" -ge 100 ]]; then
-    # cloud setup
-    portfolio=kkkccl
-    log_stdout_and_stderr "CLOUD SETUP (portfolio: $portfolio)"
-fi
 if $MALLOB_IMPCHECK; then
     # TRUSTED setup with ImpCheck (with reduced number of threads where necessary)
     n_threads_per_process=$(printf "%.0f" $(echo "(11/12) * $n_threads_per_process - (2/3)"|bc -l))
-    portfolio='c!k+(c!){'$(($n_threads_per_process-2))'}(c!l+(c!){'$(($n_threads_per_process-2))'}){7}'
+    if [[ "$nglobalprocs" -ge 100 ]]; then
+        portfolio='c!k+(c!){'$(($n_threads_per_process-2))'}(c!l+(c!){'$(($n_threads_per_process-2))'}){7}'
+        log_stdout_and_stderr "TRUSTED CLOUD SETUP"
+    else
+        portfolio='c!'
+        log_stdout_and_stderr "TRUSTED PARALLEL SETUP"
+    fi
     otfcopts="-rspaa=0 -otfc=1 -max-lits-per-thread=30000000"
-    log_stdout_and_stderr "TRUSTED SETUP (portfolio: $portfolio)"
 else
-    # Usual setup
+    # Default setup
+    if [[ "$nglobalprocs" -ge 100 ]]; then
+        portfolio='kcl'
+        log_stdout_and_stderr "DEFAULT CLOUD SETUP"
+    else
+        portfolio='k'
+        log_stdout_and_stderr "DEFAULT PARALLEL SETUP"
+    fi
     otfcopts="-rspaa=1 -otfc=0 -max-lits-per-thread=60000000"
-    log_stdout_and_stderr "DEFAULT SETUP (portfolio: $portfolio)"
 fi
+log_stdout_and_stderr "Portfolio: $portfolio"
 
 log_stdout_and_stderr "Running Mallob with $n_threads_per_process threads on $(hostname) as leader and with $nglobalprocs MPI processes in total"
 bufferbasesize=$((400 * $n_threads_per_process / $sharingspersec))
