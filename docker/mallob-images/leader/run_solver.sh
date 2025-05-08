@@ -54,12 +54,21 @@ log_stdout_and_stderr "Buffer base size: $bufferbasesize"
 
 options="-mono=$2 -pre-cleanup=1 -seed=110519 -zero-only-logging=1 -v=3 -t=${n_threads_per_process} \
 -clause-buffer-base-size=$bufferbasesize -satsolver=$portfolio -rlbd=3 -ilbd=0 \
--processes-per-host=1 -regular-process-allocation=1 -s2f=/rundir/solution.txt -cm=1 \
+-processes-per-host=1 -regular-process-allocation=1 -s2f=/rundir/solution.txt -cm=1 -terminate-abruptly=1 \
 -trace-dir=/tmp $opts"
 
 command="mpirun --mca btl_tcp_if_include eth0 --allow-run-as-root --hostfile $1 --bind-to none \
 -x MALLOC_CONF=thp:always -x PATH=.:$PATH -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x RDMAV_FORK_SAFE=1 \
 mallob $options"
 
+# Clean up any previous models
+rm -rf /rundir/solution.txt.* 2>/dev/null || :
+
 log_stdout_and_stderr "EXECUTING: $command"
 $command
+
+# Cleanly output the found model (if any)
+if [ -f /rundir/solution.txt.* ]; then
+    cat /rundir/solution.txt.*
+    rm /rundir/solution.txt.*
+fi

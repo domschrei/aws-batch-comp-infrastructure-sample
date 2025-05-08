@@ -6,7 +6,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt install -y cmake build-essential zlib1g-dev libopenmpi-dev wget unzip build-essential zlib1g-dev cmake python3 build-essential gfortran wget curl libjemalloc-dev libjemalloc2 gdb
 
 # Build Mallob
-RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout experimental && git checkout 1a11806292af808d53622f78416c03ebc20a189e
+RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout experimental && git checkout 7e96b476d3efd174f9c309fcb75f35bc08ed2984
 WORKDIR mallob
 RUN cd lib && bash fetch_and_build_solvers.sh klcy
 RUN sed -i 's/^new_test.*$//g' CMakeLists.txt src/app/sat/setup.cmake # disable building tests to save time & energy
