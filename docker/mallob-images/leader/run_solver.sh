@@ -33,22 +33,18 @@ if $MALLOB_IMPCHECK; then
     n_threads_per_process=$(printf "%.0f" $(echo "(11/12) * $n_threads_per_process - (2/3)"|bc -l))
     if [[ "$nglobalprocs" -ge 100 ]]; then
         portfolio='c!k+(c!){'$(($n_threads_per_process-2))'}(c!l+(c!){'$(($n_threads_per_process-2))'}){7}'
-        log_stdout_and_stderr "TRUSTED CLOUD SETUP"
+        log_stdout_and_stderr "Setup: IMPCHECK CLOUD"
     else
         portfolio='c!'
-        log_stdout_and_stderr "TRUSTED PARALLEL SETUP"
+        log_stdout_and_stderr "Setup: IMPCHECK PARALLEL"
     fi
-    otfcopts="-rspaa=0 -otfc=1 -max-lits-per-thread=30000000"
+    opts="-rspaa=0 -otfc=1 -max-lits-per-thread=30000000"
 else
     # Default setup
-    if [[ "$nglobalprocs" -ge 100 ]]; then
-        portfolio='kcl'
-        log_stdout_and_stderr "DEFAULT CLOUD SETUP"
-    else
-        portfolio='k'
-        log_stdout_and_stderr "DEFAULT PARALLEL SETUP"
-    fi
-    otfcopts="-rspaa=1 -otfc=0 -max-lits-per-thread=60000000"
+    portfolio='k_l+[k_]{14}' # ||: 1 search-only Kissat, 1 SAT-preset Lingeling (= YalSAT), 14 search-only Kissats :||
+    opts="-mono-app=SATWITHPRE -pb=0 -pjp=999999 -pef=1 -pl=1 -div-native=0 \
+    -rspaa=1 -otfc=0 -max-lits-per-thread=60000000"
+    log_stdout_and_stderr "Setup: SATWITHPRE"
 fi
 log_stdout_and_stderr "Portfolio: $portfolio"
 
@@ -57,8 +53,9 @@ bufferbasesize=$((400 * $n_threads_per_process / $sharingspersec))
 log_stdout_and_stderr "Buffer base size: $bufferbasesize"
 
 options="-mono=$2 -pre-cleanup=1 -seed=110519 -zero-only-logging=1 -v=3 -t=${n_threads_per_process} \
--clause-buffer-base-size=$bufferbasesize -satsolver=$portfolio \
--processes-per-host=1 -regular-process-allocation=1 -sleep=1000 -trace-dir=/tmp $otfcopts"
+-clause-buffer-base-size=$bufferbasesize -satsolver=$portfolio -rlbd=3 -ilbd=0 \
+-processes-per-host=1 -regular-process-allocation=1 -s2f=/rundir/solution.txt -cm=1 \
+-trace-dir=/tmp $opts"
 
 command="mpirun --mca btl_tcp_if_include eth0 --allow-run-as-root --hostfile $1 --bind-to none \
 -x MALLOC_CONF=thp:always -x PATH=.:$PATH -x OMPI_MCA_btl_vader_single_copy_mechanism=none -x RDMAV_FORK_SAFE=1 \

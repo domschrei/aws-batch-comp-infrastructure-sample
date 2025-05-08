@@ -6,12 +6,12 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt install -y cmake build-essential zlib1g-dev libopenmpi-dev wget unzip build-essential zlib1g-dev cmake python3 build-essential gfortran wget curl libjemalloc-dev libjemalloc2 gdb
 
 # Build Mallob
-RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout sharingupdates && git checkout 08898345effa904c87d82a73dbee339049467d61
+RUN git clone https://github.com/domschrei/mallob && cd mallob && git checkout experimental && git checkout 1a11806292af808d53622f78416c03ebc20a189e
 WORKDIR mallob
 RUN cd lib && bash fetch_and_build_solvers.sh klcy
 RUN sed -i 's/^new_test.*$//g' CMakeLists.txt src/app/sat/setup.cmake # disable building tests to save time & energy
 RUN mkdir build
-RUN cd build && cmake -DCMAKE_BUILD_TYPE=RELEASE -DMALLOB_USE_ASAN=0 -DMALLOB_ASSERT=1 -DMALLOB_ASSERT_HEAVY=0 -DMALLOB_USE_JEMALLOC=1 -DMALLOB_JEMALLOC_DIR=/usr/lib/x86_64-linux-gnu -DMALLOB_LOG_VERBOSITY=4 -DMALLOB_SUBPROC_DISPATCH_PATH=\"./\" -DMALLOB_APP_SAT=1 -DMALLOB_USE_GLUCOSE=0 -DMALLOB_MAX_N_APPTHREADS_PER_PROCESS=64 .. && VERBOSE=1 make -j
+RUN cd build && cmake -DCMAKE_BUILD_TYPE=RELEASE -DMALLOB_USE_ASAN=0 -DMALLOB_ASSERT=1 -DMALLOB_ASSERT_HEAVY=0 -DMALLOB_USE_JEMALLOC=1 -DMALLOB_JEMALLOC_DIR=/usr/lib/x86_64-linux-gnu -DMALLOB_LOG_VERBOSITY=4 -DMALLOB_SUBPROC_DISPATCH_PATH=\"./\" -DMALLOB_APP_SAT=1 -DMALLOB_APP_SATWITHPRE=1 -DMALLOB_USE_GLUCOSE=0 -DMALLOB_MAX_N_APPTHREADS_PER_PROCESS=64 .. && VERBOSE=1 make -j
 
 # Build ImpCheck
 RUN git clone https://github.com/domschrei/impcheck && cd impcheck && git checkout dd07350133506db3b13d16faaf2f80c4f0d0ee1d
